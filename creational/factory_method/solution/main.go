@@ -1,8 +1,6 @@
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
 type Notifier interface {
 	Send(message string)
@@ -10,27 +8,36 @@ type Notifier interface {
 
 type EmailNotifier struct{}
 
-func (e EmailNotifier) Send(message string) {
+func (EmailNotifier) Send(message string) {
 	fmt.Printf("Sending message: %s (Sender: Email)", message)
 }
 
-type SmsNotifier struct{}
+type SMSNotifier struct{}
 
-func (sms SmsNotifier) Send(message string) {
+func (SMSNotifier) Send(message string) {
 	fmt.Printf("Sending message: %s (Sender: SMS)", message)
 }
 
-type NotiService struct {
+type Service struct {
 	notifier Notifier
 }
 
-func (s NotiService) SendNoti(message string) {
+func (s Service) SendNotification(message string) {
 	s.notifier.Send(message)
 }
 
-func main() {
-	s := NotiService{
-		notifier: SmsNotifier{},
+func CreateNotifier(t string) Notifier {
+	if t == "sms" {
+		return SMSNotifier{}
 	}
-	s.notifier.Send("Hello")
+
+	return EmailNotifier{}
+}
+
+func main() {
+	s := Service{
+		notifier: CreateNotifier("email"),
+	}
+
+	s.SendNotification("Hello world")
 }

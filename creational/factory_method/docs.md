@@ -1,1 +1,1 @@
-# Strategy 
+# Factory method
